@@ -1,0 +1,14 @@
+PUSH 10
+;
+PUSH 20
+;
+POP
+;
+POPR RAX
+;
+;
+;
+;;
+; dfhghdfgfdgdfgdfgdfgdgd
+; fdgdfgdfgd
+HLT
