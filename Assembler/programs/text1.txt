@@ -5,6 +5,7 @@ PUSH 20
 POP
 ;
 POPR RAX
+PUSHR RAX
 ;
 ;
 ;

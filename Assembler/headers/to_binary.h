@@ -26,6 +26,8 @@ enum CompileErr {
   REALLOC_FAILED,
   UNKNOWN_COMMAND,
   INCORRECT_ARG,
+  INCORRECT_LABEL,
+  NEGATIVE_LABEL,
   NO_HLT
 };
 
@@ -39,11 +41,16 @@ struct Code {
   char * buffer;
   char ** array;
   struct Command * commands;
+  int * labels;
+  size_t len_labels;
   size_t len;
   size_t total_command;
+  size_t real_command;
 };
 
 CompileErr convert(char * filename);
+void Destroy(Code * code);
+CompileErr getLabels(Code * code);
 CompileErr textToCommands(Code * code);
 CompileErr commandsToFile(Code * code, char * bfilename);
 CompileErr checkStr(char * str, int * arg);

@@ -29,7 +29,7 @@ CompileErr checkFiles(int argc, char * argv[]) {
     }
 
     else {
-      return LONG_NAME;  // colorPrintf(RED, PRIMARY, "\nСлишком длинное имя файла: %s.\n", argv[i]);
+      return LONG_NAME;
     }
   }
   return SUCCESS;
