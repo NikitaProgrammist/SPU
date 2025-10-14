@@ -164,6 +164,13 @@ CompileErr textToCommands(Code * code) {
       }
       code->commands[command] = {.bname = 5, .barg = 0};
     }
+    else if (!strncmp(str, "DIV", 3)) {
+      if (str[3] != '\0' && str[4] != ';') {
+        Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      code->commands[command] = {.bname = 10, .barg = 0};
+    }
     else if (!strncmp(str, "SQRT", 4)) {
       if (str[4] != '\0' && str[5] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
@@ -172,6 +179,7 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 6, .barg = 0};
     }
     else if (!strncmp(str, "IN", 2)) {
+      stack_count++;
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -179,6 +187,11 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 7, .barg = 0};
     }
     else if (!strncmp(str, "OUT", 3)) {
+      if (stack_count == 0) {
+        Error("error: pop из пустого стека %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      stack_count--;
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -306,13 +319,14 @@ CompileErr textToCommands(Code * code) {
         }
       }
       code->commands[command] = {.bname = 57, .barg = code->labels[arg]};
+      code->commands[code->labels[arg]].bname = -code->commands[code->labels[arg]].bname;
     }
     else if (!strncmp(str, "RET", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 60, .barg = 0};
+      code->commands[command] = {.bname = 49, .barg = 0};
     }
     else if (!strncmp(str, "HLT", 3)) {
       if (str[3] != '\0' && str[4] != ';') {

@@ -36,7 +36,7 @@ submodule-update:
 	git submodule update --remote --recursive
 
 run: $(EXECUTABLE)
-	cd ./build; ./main; cd ..
+	./build/main
 
 clean:
 	rm -rf $(OBJECTS) $(EXECUTABLE)
