@@ -48,5 +48,6 @@ enum Errors {
 Errors readFile(Processor * processor, char * filename);
 Errors getCommands(Processor * processor, char * filename);
 Errors fileError();
+void errorParser(Errors result);
 
 #endif // READ_H

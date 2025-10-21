@@ -1,10 +1,12 @@
 #ifndef RUN_H
 #define RUN_H
 
-#define check(arg) {                                      \
-  if (arg != SUCCESS_P) {                                 \
-    return arg;                                           \
-  }                                                       \
+#define check(arg) {                                          \
+  Errors result_ = arg;                                       \
+  if (result_ != SUCCESS_P) {                                 \
+    printf("Ошибка в строке: %zu %d\n", command, result_);    \
+    return result_;                                           \
+  }                                                           \
 }
 
 enum Commands {

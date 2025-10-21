@@ -54,7 +54,7 @@ Errors Add(Processor * processor) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -77,7 +77,7 @@ Errors Sub(Processor * processor) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -100,7 +100,7 @@ Errors Mul(Processor * processor) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -123,14 +123,14 @@ Errors Div(Processor * processor) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    if (num_2 == 0) {
+    if (num_1 == 0) {
       return DIVIDED_BY_ZERO;
     }
-    result = stackPush(processor->value_stack, num_1 / num_2);
+    result = stackPush(processor->value_stack, num_2 / num_1);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -178,17 +178,29 @@ Errors Out(Processor * processor) {
   Errors error = toProcessor(result);
   if (error == SUCCESS_P && size > 0) {
     result = stackPop(processor->value_stack, &number);
-    Errors res = toProcessor(result);
-    if (res == SUCCESS_P) {
-      printf("%d", number);
+    error = toProcessor(result);
+    if (error == SUCCESS_P) {
+      printf("%d\n", number);
     }
-    return res;
+    return error;
   }
   return size <= 0 ? POP_FAILED_P : error;
 }
 
 Errors Ret(Processor * processor, size_t * command) {
-
+  int number = 0;
+  size_t size = 0;
+  StackErr result = stackGetSize(processor->value_stack, &size);
+  Errors error = toProcessor(result);
+  if (error == SUCCESS_P && size > 0) {
+    result = stackPop(processor->value_stack, &number);
+    error = toProcessor(result);
+    if (error == SUCCESS_P) {
+      *command = number;
+    }
+    return error;
+  }
+  return size <= 0 ? POP_FAILED_P : error;
 }
 
 Errors Jb(Processor * processor, int value, size_t * command) {
@@ -201,15 +213,7 @@ Errors Jb(Processor * processor, int value, size_t * command) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_2);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -231,15 +235,7 @@ Errors Jbe(Processor * processor, int value, size_t * command) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_2);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -261,15 +257,7 @@ Errors Ja(Processor * processor, int value, size_t * command) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_2);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -291,15 +279,7 @@ Errors Jae(Processor * processor, int value, size_t * command) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_2);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -321,15 +301,7 @@ Errors Je(Processor * processor, int value, size_t * command) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_2);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -351,15 +323,7 @@ Errors Jne(Processor * processor, int value, size_t * command) {
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
-    result = stackPop(processor->value_stack, &num_1);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_2);
-    if (result != SUCCESS_S) {
-      return toProcessor(result);
-    }
-    result = stackPush(processor->value_stack, num_1);
+    result = stackPop(processor->value_stack, &num_2);
     if (result != SUCCESS_S) {
       return toProcessor(result);
     }
@@ -380,7 +344,12 @@ Errors Jmp(int value, size_t * command) {
 }
 
 Errors Call(Processor * processor, int value, size_t * command) {
-
+  StackErr result = stackPush(processor->func_stack, *command);
+  if (result != SUCCESS_S) {
+    return toProcessor(result);
+  }
+  *command = value;
+  return SUCCESS_P;
 }
 
 Errors toProcessor(StackErr result) {

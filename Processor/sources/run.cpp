@@ -1,9 +1,45 @@
 #include <stdio.h>
 
-#include "stack.h"
+#include "private_stack.h"
 #include "read.h"
 #include "run.h"
 #include "commands.h"
+#include "my_printf.h"
+
+void dump1(const Stack * stack) {
+  const size_t max_print = 5;
+  if (stack) {
+
+      colorPrintf(RED, BOLD, "stack [%p]\n", stack);
+      colorPrintf(RED, BOLD, "    first_canary = %X\n", stack->first_canary);
+      colorPrintf(RED, BOLD, "    size = %zu\n", stack->size);
+      colorPrintf(RED, BOLD, "    capacity = %zu\n", stack->capacity);
+
+      if (stack->data) {
+        colorPrintf(RED, BOLD, "    data [%p]\n", stack->data);
+
+        for (size_t i = 0; i < max_print; i++) {
+          if (i < stack->size) {
+            colorPrintf(RED, BOLD, "        *[%zu] = %p\n", i, stack->data[i]);
+          }
+          else {
+            colorPrintf(RED, BOLD, "        [%zu] = %zu (not in stack)\n", i, stack->data[i]);
+          }
+        }
+
+      }
+
+      else {
+        colorPrintf(RED, BOLD, "    Нулевой указатель на массив в стеке.\n");
+      }
+
+      colorPrintf(RED, BOLD, "    last_canary = %X\n", stack->last_canary);
+  }
+
+  else {
+    colorPrintf(RED, BOLD, "Нулевой указатель на стек.\n");
+  }
+}
 
 Errors run(Processor * processor) {
   size_t command = 0;
@@ -84,6 +120,7 @@ Errors run(Processor * processor) {
         return INCORRECT_COMMAND;
         break;
     }
+    command++;
   }
   return SUCCESS_P;
 }

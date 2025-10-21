@@ -15,6 +15,9 @@ int main(int argc, char * argv[]) {
       printf("%d\n", result);
     }
     result = run(&processor);
+    if (result != SUCCESS_P) {
+      errorParser(result);
+    }
   }
   free(processor.commands);
   stackDestroy(processor.value_stack);

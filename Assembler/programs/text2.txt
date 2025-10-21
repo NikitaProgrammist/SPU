@@ -1,20 +1,121 @@
-PUSH 1
+; ввод коэффициентов
+IN
 POPR RAX
-;
-;
-:5
-;
-;
+IN
+POPR RBX
+IN
+POPR RCX
+
+; проверяем a
 PUSHR RAX
+PUSH 0
+JE :10
+
+; a != 0
+PUSHR RBX
+PUSHR RBX
+MUL
+PUSH 4
 PUSHR RAX
 MUL
-OUT
-;
-PUSHR RAX
+PUSHR RCX
+MUL
+SUB
+POPR RDX
+
+; проверяем дискриминант
+PUSHR RDX
+PUSH 0
+JB :20 ; D < 0
+
+PUSHR RDX
+PUSH 0
+JE :30 ; D = 0
+
+; D > 0
+JMP :40
+
+:10 ; a = 0
+PUSHR RBX ; b
+PUSH 0 ; 0
+JE :12 ; b = 0
+
+; b != 0, 1 корень
 PUSH 1
-ADD
-POPR RAX
+OUT
+PUSH 0
+PUSHR RCX
+SUB
+PUSHR RBX
+DIV
+OUT ; выводим корень
+JMP :99
+
+:12 ; a = 0 b = 0
+PUSHR RCX
+PUSH 0
+JE :13 ; c = 0
+
+; c != 0
+PUSH -1
+OUT ; нет решений
+JMP :99
+
+:13 ; c = 0
+PUSH 3
+OUT ; бесконечно много решений
+JMP :99
+
+
+
+
+:20 ; D < 0
+PUSH -1
+OUT ; нет решений
+JMP :99
+
+:30 ; D = 0
+PUSH 1
+OUT ; 1 корень
+PUSH 0
+PUSHR RBX
+SUB
+PUSH 2
 PUSHR RAX
-PUSH 10
-JB :5
+MUL
+DIV
+OUT ; выводим корень
+JMP :99
+
+:40 ; D > 0
+; x1
+PUSH 2
+OUT ; 2 корня
+PUSH 0
+PUSHR RBX
+SUB
+PUSHR RDX
+SQRT
+ADD
+PUSH 2
+PUSHR RAX
+MUL
+DIV
+OUT ; выводим x1
+
+; x2
+PUSH 0
+PUSHR RBX
+SUB
+PUSHR RDX
+SQRT
+SUB
+PUSH 2
+PUSHR RAX
+MUL
+DIV
+OUT ; выводим x2
+
+; конец программы
+:99
 HLT

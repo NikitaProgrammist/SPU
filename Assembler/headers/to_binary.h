@@ -28,6 +28,7 @@ enum CompileErr {
   INCORRECT_ARG,
   INCORRECT_LABEL,
   NEGATIVE_LABEL,
+  TOO_BIG_LABEL,
   NO_HLT
 };
 

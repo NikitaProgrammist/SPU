@@ -69,15 +69,23 @@ CompileErr getLabels(Code * code) {
         return NEGATIVE_LABEL;
       }
       else if (arg < code->len_labels) {
-        code->labels[arg] = command - shift;
+        code->labels[arg] = command - shift - 1;
       }
       else {
-        code->len_labels *= 2;
+        if (arg > 10000) {
+          return TOO_BIG_LABEL;
+        }
+        code->len_labels = 2 * arg;
         code->labels = (int *) realloc(code->labels, code->len_labels * sizeof(int));
+        if (code->labels == NULL) {
+          Destroy(code);
+          return REALLOC_FAILED;
+        }
+        code->labels[arg] = command - shift - 1;
       }
       shift++;
     }
-    if (str[0] == ';') {
+    if (str[0] == ';' || str[0] == ' ' || str[0] == '\0' || str[0] == '\n') {
       shift++;
     }
     command++;
@@ -90,7 +98,7 @@ CompileErr textToCommands(Code * code) {
   size_t command = 0, stack_count = 0;
   while (command < code->total_command) {
     char * str = code->array[command];
-    if (*str == '\0') {
+    if (*str == EOF) {
       break;
     }
     if (!strncmp(str, "PUSHR", 5)) {
@@ -119,7 +127,7 @@ CompileErr textToCommands(Code * code) {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 33, .barg = str[7] - 'A'};
+      code->commands[command] = {.bname = 33, .barg = str[6] - 'A'};
     }
     else if (!strncmp(str, "PUSH", 4)) {
       stack_count++;
@@ -180,7 +188,7 @@ CompileErr textToCommands(Code * code) {
     }
     else if (!strncmp(str, "IN", 2)) {
       stack_count++;
-      if (str[3] != '\0' && str[4] != ';') {
+      if (str[2] != '\0' && str[3] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
@@ -335,12 +343,9 @@ CompileErr textToCommands(Code * code) {
       }
       code->commands[command] = {.bname = 9, .barg = 0};
     }
-    else if (str[0] == ':') {
+    else if (str[0] == ':' || str[0] == ';' || str[0] == '\n' || str[0] == ' ' || str[0] == '\0') {
       command++;
       continue;
-    }
-    else if (str[0] == ';') {
-      code->commands[command] = {.bname = 0, .barg = 0};
     }
     else {
       Error("error: некорректная команда %s", code->filename, command, str, str);
@@ -360,8 +365,13 @@ CompileErr textToCommands(Code * code) {
 }
 
 CompileErr checkStr(char * str, int * arg) {
-  int result = 0;
+  int result = 0, sign = 1;
   while (*str != '\0' && *str != ';') {
+    if (*str == '-' || *str == '+') {
+      sign *= (*str == '-' ? -1 : 1);
+      str++;
+      continue;
+    }
     if (*str == ' ') {
       str++;
       continue;
@@ -373,7 +383,7 @@ CompileErr checkStr(char * str, int * arg) {
     result += *str - '0';
     str++;
   }
-  *arg = result;
+  *arg = result * sign;
   return SUCCESS;
 }
 
