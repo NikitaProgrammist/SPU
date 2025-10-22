@@ -85,6 +85,13 @@ CompileErr getLabels(Code * code) {
       }
       shift++;
     }
+    else if (!strncmp(str, "RET", 3)) {
+      if (str[3] != '\0' && str[4] != ';') {
+        Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      code->last_ret = command - shift + 1;
+    }
     if (str[0] == ';' || str[0] == ' ' || str[0] == '\0' || str[0] == '\n') {
       shift++;
     }
@@ -95,14 +102,13 @@ CompileErr getLabels(Code * code) {
 }
 
 CompileErr textToCommands(Code * code) {
-  size_t command = 0, stack_count = 0;
+  size_t command = 0;
   while (command < code->total_command) {
     char * str = code->array[command];
     if (*str == EOF) {
       break;
     }
     if (!strncmp(str, "PUSHR", 5)) {
-      stack_count++;
       if (str[5] != ' ' || str[6] != 'R' || str[8] != 'X' || 'A' > str[7] || str[7] > 'K') {
         Error("error: некорректный регистр %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -114,11 +120,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 42, .barg = str[7] - 'A'};
     }
     else if (!strncmp(str, "POPR", 4)) {
-      if (stack_count == 0) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count--;
       if (str[4] != ' ' || str[5] != 'R' || str[7] != 'X' || 'A' > str[6] || str[6] > 'K') {
         Error("error: некорректный регистр %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -130,7 +131,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 33, .barg = str[6] - 'A'};
     }
     else if (!strncmp(str, "PUSH", 4)) {
-      stack_count++;
       int arg = 0;
       CompileErr result = checkStr(str + 4, &arg);
       if (result != SUCCESS) {
@@ -140,11 +140,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 1, .barg = arg};
     }
     else if (!strncmp(str, "POP", 3)) {
-      if (stack_count == 0) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count--;
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -187,7 +182,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 6, .barg = 0};
     }
     else if (!strncmp(str, "IN", 2)) {
-      stack_count++;
       if (str[2] != '\0' && str[3] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -195,11 +189,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 7, .barg = 0};
     }
     else if (!strncmp(str, "OUT", 3)) {
-      if (stack_count == 0) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count--;
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
@@ -207,11 +196,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 8, .barg = 0};
     }
     else if (!strncmp(str, "JB", 2)) {
-      if (stack_count < 2) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count -= 2;
       int arg = 0;
       if (str[2] == ' ' && str[3] == ':') {
         CompileErr result = checkStr(str + 4, &arg);
@@ -227,11 +211,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 50, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JBE", 3)) {
-      if (stack_count < 2) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count -= 2;
       int arg = 0;
       if (str[3] == ' ' && str[4] == ':') {
         CompileErr result = checkStr(str + 5, &arg);
@@ -243,11 +222,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 51, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JA", 2)) {
-      if (stack_count < 2) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count -= 2;
       int arg = 0;
       if (str[2] == ' ' && str[3] == ':') {
         CompileErr result = checkStr(str + 4, &arg);
@@ -259,11 +233,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 52, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JAE", 3)) {
-      if (stack_count < 2) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count -= 2;
       int arg = 0;
       if (str[3] == ' ' && str[4] == ':') {
         CompileErr result = checkStr(str + 5, &arg);
@@ -275,11 +244,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 53, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JE", 2)) {
-      if (stack_count < 2) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count -= 2;
       int arg = 0;
       if (str[2] == ' ' && str[3] == ':') {
         CompileErr result = checkStr(str + 4, &arg);
@@ -291,11 +255,6 @@ CompileErr textToCommands(Code * code) {
       code->commands[command] = {.bname = 54, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JNE", 3)) {
-      if (stack_count < 2) {
-        Error("error: pop из пустого стека %s", code->filename, command, str, str);
-        return INCORRECT_ARG;
-      }
-      stack_count -= 2;
       int arg = 0;
       if (str[3] == ' ' && str[4] == ':') {
         CompileErr result = checkStr(str + 5, &arg);
@@ -327,7 +286,6 @@ CompileErr textToCommands(Code * code) {
         }
       }
       code->commands[command] = {.bname = 57, .barg = code->labels[arg]};
-      code->commands[code->labels[arg]].bname = -code->commands[code->labels[arg]].bname;
     }
     else if (!strncmp(str, "RET", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
@@ -392,7 +350,7 @@ CompileErr commandsToFile(Code * code, char * bfilename) {
   if (file == NULL) {
     return fileError();
   }
-  fprintf(file, "%zu\n", code->real_command);
+  fprintf(file, "%zu %d\n", code->real_command, code->last_ret);
   for (size_t i = 0; i < code->total_command; i++) {
     if (code->commands[i].bname != 0) {
       if (code->commands[i].bname == 42 || code->commands[i].bname == 33 || code->commands[i].bname == 1 || code->commands[i].bname >= 50) {

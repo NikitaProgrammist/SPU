@@ -42,14 +42,8 @@ void dump1(const Stack * stack) {
 }
 
 Errors run(Processor * processor) {
-  size_t command = 0;
+  size_t command = processor->start;
   while (command < processor->commands_count) {
-    if (processor->commands[command].number < 0) {
-      while (processor->commands[command].number != RET && command < processor->commands_count) {
-        command++;
-      }
-      continue;
-    }
     switch (processor->commands[command].number) {
       case PUSHR:
         check(Pushr(processor, processor->commands[command].value));
@@ -112,9 +106,7 @@ Errors run(Processor * processor) {
         check(Jmp(processor->commands[command].value, &command));
         break;
       case CALL:
-        processor->commands[processor->commands[command].value].number = -processor->commands[processor->commands[command].value].number;
         check(Call(processor, processor->commands[command].value, &command));
-        processor->commands[processor->commands[command].value].number = -processor->commands[processor->commands[command].value].number;
         break;
       default:
         return INCORRECT_COMMAND;

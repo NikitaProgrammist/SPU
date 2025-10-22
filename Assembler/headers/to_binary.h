@@ -43,6 +43,7 @@ struct Code {
   char ** array;
   struct Command * commands;
   int * labels;
+  int last_ret;
   size_t len_labels;
   size_t len;
   size_t total_command;

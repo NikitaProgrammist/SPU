@@ -12,6 +12,7 @@ struct Processor {
   struct Command * commands;
   stack_t regs[16];
   size_t commands_count;
+  int start;
 };
 
 enum Errors {

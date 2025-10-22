@@ -190,10 +190,10 @@ Errors Out(Processor * processor) {
 Errors Ret(Processor * processor, size_t * command) {
   int number = 0;
   size_t size = 0;
-  StackErr result = stackGetSize(processor->value_stack, &size);
+  StackErr result = stackGetSize(processor->func_stack, &size);
   Errors error = toProcessor(result);
   if (error == SUCCESS_P && size > 0) {
-    result = stackPop(processor->value_stack, &number);
+    result = stackPop(processor->func_stack, &number);
     error = toProcessor(result);
     if (error == SUCCESS_P) {
       *command = number;

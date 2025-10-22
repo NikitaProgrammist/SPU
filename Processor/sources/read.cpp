@@ -29,8 +29,8 @@ Errors getCommands(Processor * processor, char * filename) {
   if (file == NULL) {
     return fileError();
   }
-  int res = fscanf(file, "%zu", &processor->commands_count);
-  if (res != 1) {
+  int res = fscanf(file, "%zu%d", &processor->commands_count, &processor->start);
+  if (res != 2) {
     return SCANF_ERR;
   }
   processor->commands = (Command *) calloc(processor->commands_count, sizeof(Command));
