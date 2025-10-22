@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "to_binary.h"
+#include "utils.h"
 #include "my_printf.h"
 
 CompileErr checkFiles(int argc, char * argv[]);

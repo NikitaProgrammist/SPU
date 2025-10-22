@@ -50,15 +50,8 @@ struct Code {
   size_t real_command;
 };
 
-CompileErr convert(char * filename);
-void Destroy(Code * code);
 CompileErr getLabels(Code * code);
 CompileErr textToCommands(Code * code);
 CompileErr commandsToFile(Code * code, char * bfilename);
-CompileErr checkStr(char * str, int * arg);
-size_t getFileSize(FILE * file);
-void getBuffer(FILE * file, Code * code);
-void getArray(Code * code);
-CompileErr fileError();
 
 #endif // ASM_H
