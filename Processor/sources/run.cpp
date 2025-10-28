@@ -84,6 +84,15 @@ Errors run(Processor * processor) {
       case RET:
         check(Ret(processor, &command));
         break;
+      case PUSHM:
+        check(Pushm(processor, processor->commands[command].value));
+        break;
+      case POPM:
+        check(Popm(processor, processor->commands[command].value));
+        break;
+      case DRAW:
+        check(Draw(processor, processor->commands[command].value));
+        break;
       case JB:
         check(Jb(processor, processor->commands[command].value, &command));
         break;

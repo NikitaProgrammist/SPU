@@ -13,6 +13,7 @@ struct Processor {
   stack_t regs[16];
   size_t commands_count;
   int start;
+  int ram[100];
 };
 
 enum Errors {

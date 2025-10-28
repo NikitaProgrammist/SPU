@@ -32,6 +32,33 @@ enum CompileErr {
   NO_HLT
 };
 
+enum Commands {
+  PUSHR=42,
+  POPR=33,
+  PUSH=1,
+  POP,
+  ADD,
+  SUB,
+  MUL,
+  SQRT,
+  IN,
+  OUT,
+  HLT,
+  DIV,
+  RET=43,
+  DRAW,
+  PUSHM,
+  POPM,
+  JB,
+  JBE,
+  JA,
+  JAE,
+  JE,
+  JNE,
+  JMP,
+  CALL
+};
+
 struct Command {
   int bname;
   int barg;

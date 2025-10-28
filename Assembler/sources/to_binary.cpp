@@ -72,7 +72,7 @@ CompileErr textToCommands(Code * code) {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 42, .barg = str[7] - 'A'};
+      code->commands[command] = {.bname = PUSHR, .barg = str[7] - 'A'};
     }
     else if (!strncmp(str, "POPR", 4)) {
       if (str[4] != ' ' || str[5] != 'R' || str[7] != 'X' || 'A' > str[6] || str[6] > 'K') {
@@ -83,7 +83,29 @@ CompileErr textToCommands(Code * code) {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 33, .barg = str[6] - 'A'};
+      code->commands[command] = {.bname = POPR, .barg = str[6] - 'A'};
+    }
+    else if (!strncmp(str, "PUSHM", 5)) {
+      if (str[5] != ' ' || str[6] != '[' || str[7] != 'R' || str[9] != 'X' || str[10] != ']' || 'A' > str[8] || str[8] > 'K') {
+        Error("error: некорректный регистр %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      if (str[11] != '\0' && str[12] != ';') {
+        Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      code->commands[command] = {.bname = PUSHM, .barg = str[8] - 'A'};
+    }
+    else if (!strncmp(str, "POPM", 4)) {
+      if (str[4] != ' ' || str[5] != '[' || str[6] != 'R' || str[8] != 'X' || str[9] != ']' || 'A' > str[7] || str[7] > 'K') {
+        Error("error: некорректный регистр %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      if (str[10] != '\0' && str[11] != ';') {
+        Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      code->commands[command] = {.bname = POPM, .barg = str[7] - 'A'};
     }
     else if (!strncmp(str, "PUSH", 4)) {
       int arg = 0;
@@ -92,63 +114,63 @@ CompileErr textToCommands(Code * code) {
         Error("error: некорректный аргумент команды %s", code->filename, command, str, str);
         return result;
       }
-      code->commands[command] = {.bname = 1, .barg = arg};
+      code->commands[command] = {.bname = PUSH, .barg = arg};
     }
     else if (!strncmp(str, "POP", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 2, .barg = 0};
+      code->commands[command] = {.bname = POP, .barg = 0};
     }
     else if (!strncmp(str, "ADD", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 3, .barg = 0};
+      code->commands[command] = {.bname = ADD, .barg = 0};
     }
     else if (!strncmp(str, "SUB", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 4, .barg = 0};
+      code->commands[command] = {.bname = SUB, .barg = 0};
     }
     else if (!strncmp(str, "MUL", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 5, .barg = 0};
+      code->commands[command] = {.bname = MUL, .barg = 0};
     }
     else if (!strncmp(str, "DIV", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 10, .barg = 0};
+      code->commands[command] = {.bname = DIV, .barg = 0};
     }
     else if (!strncmp(str, "SQRT", 4)) {
       if (str[4] != '\0' && str[5] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 6, .barg = 0};
+      code->commands[command] = {.bname = SQRT, .barg = 0};
     }
     else if (!strncmp(str, "IN", 2)) {
       if (str[2] != '\0' && str[3] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 7, .barg = 0};
+      code->commands[command] = {.bname = IN, .barg = 0};
     }
     else if (!strncmp(str, "OUT", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 8, .barg = 0};
+      code->commands[command] = {.bname = OUT, .barg = 0};
     }
     else if (!strncmp(str, "JB", 2)) {
       int arg = 0;
@@ -163,7 +185,7 @@ CompileErr textToCommands(Code * code) {
         Error("error: программа ссылается на несуществующую метку %s", code->filename, command, str, str);
         return INCORRECT_LABEL;
       }
-      code->commands[command] = {.bname = 50, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JB, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JBE", 3)) {
       int arg = 0;
@@ -174,7 +196,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 51, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JBE, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JA", 2)) {
       int arg = 0;
@@ -185,7 +207,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 52, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JA, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JAE", 3)) {
       int arg = 0;
@@ -196,7 +218,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 53, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JAE, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JE", 2)) {
       int arg = 0;
@@ -207,7 +229,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 54, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JE, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JNE", 3)) {
       int arg = 0;
@@ -218,7 +240,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 55, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JNE, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JMP", 3)) {
       int arg = 0;
@@ -229,7 +251,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 56, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JMP, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "CALL", 4)) {
       int arg = 0;
@@ -240,21 +262,28 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = 57, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = CALL, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "RET", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 49, .barg = 0};
+      code->commands[command] = {.bname = RET, .barg = 0};
+    }
+    else if (!strncmp(str, "DRAW", 4)) {
+      if (str[4] != '\0' && str[5] != ';') {
+        Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
+        return INCORRECT_ARG;
+      }
+      code->commands[command] = {.bname = DRAW, .barg = 0};
     }
     else if (!strncmp(str, "HLT", 3)) {
       if (str[3] != '\0' && str[4] != ';') {
         Error("error: некорректный лишний аргумент команды %s", code->filename, command, str, str);
         return INCORRECT_ARG;
       }
-      code->commands[command] = {.bname = 9, .barg = 0};
+      code->commands[command] = {.bname = HLT, .barg = 0};
     }
     else if (str[0] == ':' || str[0] == ';' || str[0] == '\n' || str[0] == ' ' || str[0] == '\0') {
       command++;
@@ -285,7 +314,7 @@ CompileErr commandsToFile(Code * code, char * bfilename) {
   fprintf(file, "%zu %d\n", code->real_command, code->last_ret);
   for (size_t i = 0; i < code->total_command; i++) {
     if (code->commands[i].bname != 0) {
-      if (code->commands[i].bname == 42 || code->commands[i].bname == 33 || code->commands[i].bname == 1 || code->commands[i].bname >= 50) {
+      if (code->commands[i].bname == PUSHR || code->commands[i].bname == POPR || code->commands[i].bname == PUSH || code->commands[i].bname > RET) {
         fprintf(file, "%d %d\n", code->commands[i].bname, code->commands[i].barg);
       }
       else {

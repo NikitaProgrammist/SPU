@@ -203,6 +203,38 @@ Errors Ret(Processor * processor, size_t * command) {
   return size <= 0 ? POP_FAILED_P : error;
 }
 
+Errors Pushm(Processor * processor, int value) {
+  if (value < 0 || value > 15 || processor->regs[value] < 0 || processor->regs[value] >= 100) {
+    return INVALID_REGISTER;
+  }
+  StackErr result = stackPush(processor->value_stack, processor->ram[processor->regs[value]]);
+  return toProcessor(result);
+}
+
+Errors Popm(Processor * processor, int value) {
+  if (value < 0 || value > 15 || processor->regs[value] < 0 || processor->regs[value] >= 100) {
+    return INVALID_REGISTER;
+  }
+  size_t size = 0;
+  StackErr result = stackGetSize(processor->value_stack, &size);
+  Errors error = toProcessor(result);
+  if (error == SUCCESS_P && size > 0) {
+    result = stackPop(processor->value_stack, &processor->ram[processor->regs[value]]);
+    return toProcessor(result);
+  }
+  return size <= 0 ? POP_FAILED_P : error;
+}
+
+Errors Draw(Processor * processor, int value) {
+  for (int i = 0; i < 100; i++) {
+    printf("%c", processor->ram[i]);
+    if (i % 10 == 0) {
+      printf("\n");
+    }
+  }
+  return SUCCESS_P;
+}
+
 Errors Jb(Processor * processor, int value, size_t * command) {
   size_t size = 0;
   stack_t num_1 = 0, num_2 = 0;

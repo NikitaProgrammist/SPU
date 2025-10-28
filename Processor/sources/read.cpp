@@ -5,6 +5,7 @@
 
 #include "stack.h"
 #include "read.h"
+#include "run.h"
 
 Errors readFile(Processor * processor, char * filename) {
   const size_t maxsize = 256;
@@ -42,7 +43,7 @@ Errors getCommands(Processor * processor, char * filename) {
     if (res != 1) {
       return SCANF_ERR;
     }
-    if (processor->commands[i].number == 42 || processor->commands[i].number == 33 || processor->commands[i].number == 1 || processor->commands[i].number >= 50) {
+    if (processor->commands[i].number == PUSHR || processor->commands[i].number == POPR || processor->commands[i].number == PUSH || processor->commands[i].number > RET) {
       res = fscanf(file, "%d", &processor->commands[i].value);
       if (res != 1) {
         return SCANF_ERR;
