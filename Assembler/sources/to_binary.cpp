@@ -172,6 +172,17 @@ CompileErr textToCommands(Code * code) {
       }
       code->commands[command] = {.bname = OUT, .barg = 0};
     }
+    else if (!strncmp(str, "JBE", 3)) {
+      int arg = 0;
+      if (str[3] == ' ' && str[4] == ':') {
+        CompileErr result = checkStr(str + 5, &arg);
+        if (result != SUCCESS) {
+          Error("error: некорректный аргумент команды %s", code->filename, command, str, str);
+          return result;
+        }
+      }
+      code->commands[command] = {.bname = JBE, .barg = code->labels[arg]};
+    }
     else if (!strncmp(str, "JB", 2)) {
       int arg = 0;
       if (str[2] == ' ' && str[3] == ':') {
@@ -187,7 +198,7 @@ CompileErr textToCommands(Code * code) {
       }
       code->commands[command] = {.bname = JB, .barg = code->labels[arg]};
     }
-    else if (!strncmp(str, "JBE", 3)) {
+    else if (!strncmp(str, "JAE", 3)) {
       int arg = 0;
       if (str[3] == ' ' && str[4] == ':') {
         CompileErr result = checkStr(str + 5, &arg);
@@ -196,7 +207,7 @@ CompileErr textToCommands(Code * code) {
           return result;
         }
       }
-      code->commands[command] = {.bname = JBE, .barg = code->labels[arg]};
+      code->commands[command] = {.bname = JAE, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JA", 2)) {
       int arg = 0;
@@ -208,17 +219,6 @@ CompileErr textToCommands(Code * code) {
         }
       }
       code->commands[command] = {.bname = JA, .barg = code->labels[arg]};
-    }
-    else if (!strncmp(str, "JAE", 3)) {
-      int arg = 0;
-      if (str[3] == ' ' && str[4] == ':') {
-        CompileErr result = checkStr(str + 5, &arg);
-        if (result != SUCCESS) {
-          Error("error: некорректный аргумент команды %s", code->filename, command, str, str);
-          return result;
-        }
-      }
-      code->commands[command] = {.bname = JAE, .barg = code->labels[arg]};
     }
     else if (!strncmp(str, "JE", 2)) {
       int arg = 0;
